@@ -2,7 +2,7 @@
 using System.ComponentModel.Design;
 using System.IO;
 
-namespace dtp7_contact_list
+namespace dkontaktlistan
 {
     class MainClass
     {
@@ -91,7 +91,6 @@ namespace dtp7_contact_list
                     else if (commandLine.Length == 2)
                     {
                         lastFileName = GetUserDirectory(commandLine[1]); // commandLine[1] is the first argument
-                        // FIXME: Throws System.IO.FileNotFoundException: 
                         LoadContactListFromFile(lastFileName);
                     }
                     else
@@ -221,6 +220,10 @@ namespace dtp7_contact_list
 
         private static void LoadContactListFromFile(string lastFileName)
         {
+            // FIXME: Throws System.IO.FileNotFoundException:
+            try
+            {
+
             using (StreamReader infile = new StreamReader(lastFileName))
             {
                 string line;
@@ -230,16 +233,20 @@ namespace dtp7_contact_list
                 }
             }
         }
-
+            catch (System.IO.FileNotFoundException)
+            {
+                Console.WriteLine($"Hittade inte filen {lastFileName}! Laddade inte");
+            }
+    }
         private static void LoadContact(string lineFromAddressFile)
         {
             string[] attrs = lineFromAddressFile.Split('|');
             Person newPerson = new Person();
             newPerson.persname = attrs[0];
-            newPerson.surname = attrs[1];
-            newPerson.phone = new List<string>(attrs[2].Split(';'));
-            newPerson.address = new List<string>(attrs[3].Split(';'));
-            newPerson.birthdate = attrs[4];
+            newPerson.surname = attrs[0];
+            newPerson.phone = new List<string>(attrs[0].Split(';'));
+            newPerson.address = new List<string>(attrs[0].Split(';'));
+            newPerson.birthdate = attrs[0];
             contactList.Add(newPerson);
         }
         private static void PrintHelpMessage()
